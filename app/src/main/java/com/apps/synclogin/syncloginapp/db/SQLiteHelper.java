@@ -51,23 +51,24 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insertRecord(UserProfile record) {
+    public void insertRecord(UserProfile record, String loginType) {
         database = this.getReadableDatabase();
         ContentValues values = new ContentValues();
-        values.put(COLUMN_DATE, record.getDate());
-        values.put(COLUMN_AMOUNT, record.getAmount());
-        values.put(COLUMN_CATEGORY, record.getCategory());
+        values.put(COLUMN_FIRST_NAME, record.getFirstName());
+        values.put(COLUMN_LAST_NAME, record.getLastName());
+        values.put(COLUMN_EMAIL, record.getEmail());
+        values.put(loginType, record.getId());
         database.insert(TABLE_NAME, null, values);
         database.close();
     }
 
-    public void updateRecord(FinanceModel record) {
-        database = this.getReadableDatabase();
-        database.execSQL("update " + TABLE_NAME + " set " +
-                COLUMN_AMOUNT + " = '" + record.getAmount() +
-                "' where " + COLUMN_ID + " = '" + record.getID() + "'");
-        database.close();
-    }
+//    public void updateRecord(FinanceModel record) {
+//        database = this.getReadableDatabase();
+//        database.execSQL("update " + TABLE_NAME + " set " +
+//                COLUMN_AMOUNT + " = '" + record.getAmount() +
+//                "' where " + COLUMN_ID + " = '" + record.getID() + "'");
+//        database.close();
+//    }
 
 //    public void deleteRecord(FinanceModel record) {
 //        database = this.getReadableDatabase();
@@ -80,7 +81,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         UserProfile user = new UserProfile();
         //ArrayList<UserProfile> record = new ArrayList<UserProfile>();
         Cursor cursor = database.rawQuery("SELECT " + COLUMN_FIRST_NAME
-                + ", " + COLUMN_LAST_NAME + ", " + COLUMN_EMAIL + " from " + TABLE_NAME + "WHERE "
+                + ", " + COLUMN_LAST_NAME + ", " + COLUMN_EMAIL + " from " + TABLE_NAME + " WHERE "
                 + loginID + "= '" + userProfile.getId() +"'", null);
 
         if (cursor.getCount() > 0) {
@@ -90,6 +91,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                 user.setLastName(cursor.getString(1));
                 user.setEmail(cursor.getString(2));
             }
+        } else {
+            return null;
         }
         cursor.close();
         database.close();
@@ -97,30 +100,30 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         return user;
     }
 
-    public  ArrayList<UserProfile> getAllRecords() {
-        database = this.getReadableDatabase();
-        UserProfile userP;
-        ArrayList<FinanceModel> records = new ArrayList<FinanceModel>();
-        Cursor cursor = database.rawQuery("SELECT " + COLUMN_ID + ", " + COLUMN_DATE + ", " +
-                COLUMN_AMOUNT + ", " + COLUMN_CATEGORY +
-                " from financeYearlyReports" , null);
-
-        if (cursor.getCount() > 0) {
-            for (int i = 0; i < cursor.getCount(); i++) {
-                cursor.moveToNext();
-                financeModel = new FinanceModel();
-                financeModel.setID(cursor.getInt(0));
-                financeModel.setDate(cursor.getLong(1));
-                financeModel.setAmount(cursor.getInt(2));
-                financeModel.setCategory(cursor.getString(3));
-
-                records.add(financeModel);
-            }
-        }
-        cursor.close();
-        database.close();
-
-        return records;
-    }
+//    public  ArrayList<UserProfile> getAllRecords() {
+//        database = this.getReadableDatabase();
+//        UserProfile userP;
+//        ArrayList<FinanceModel> records = new ArrayList<FinanceModel>();
+//        Cursor cursor = database.rawQuery("SELECT " + COLUMN_ID + ", " + COLUMN_DATE + ", " +
+//                COLUMN_AMOUNT + ", " + COLUMN_CATEGORY +
+//                " from financeYearlyReports" , null);
+//
+//        if (cursor.getCount() > 0) {
+//            for (int i = 0; i < cursor.getCount(); i++) {
+//                cursor.moveToNext();
+//                financeModel = new FinanceModel();
+//                financeModel.setID(cursor.getInt(0));
+//                financeModel.setDate(cursor.getLong(1));
+//                financeModel.setAmount(cursor.getInt(2));
+//                financeModel.setCategory(cursor.getString(3));
+//
+//                records.add(financeModel);
+//            }
+//        }
+//        cursor.close();
+//        database.close();
+//
+//        return records;
+//    }
 
 }
