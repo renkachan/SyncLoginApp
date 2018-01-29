@@ -8,7 +8,7 @@
     <string name="twitter">Twitter</string>
     <string name="github">Github</string>
     <string name="facebook">Facebook</string>
-    <string name="facebook_app_id">531570380549134</string>
-    <string name="fb_login_protocol_scheme">fb531570380549134</string>
+    <string name="facebook_application_id">162745644504146</string>
+    <string name="fb_login_protocol_scheme">fb162745644504146</string>
 
 </resources>

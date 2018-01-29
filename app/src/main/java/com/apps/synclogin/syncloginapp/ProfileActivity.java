@@ -1,6 +1,8 @@
 package com.apps.synclogin.syncloginapp;
 
 import android.content.Intent;
+import android.content.pm.PackageInstaller;
+import android.media.MediaCas;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -10,9 +12,12 @@ import android.widget.TextView;
 
 import com.apps.synclogin.syncloginapp.db.SQLiteHelper;
 import com.apps.synclogin.syncloginapp.util.UserProfile;
+import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.User;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.cast.framework.Session;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -24,7 +29,8 @@ import com.google.android.gms.common.api.Status;
 
 public class ProfileActivity extends AppCompatActivity implements  View.OnClickListener,
         GoogleApiClient.OnConnectionFailedListener  {
-    private Button googleSyncBtn, twitterSyncBtn, githubSyncBtn, fbSyncBtn, instaSyncBtn, signOutBtn;
+    private Button googleSyncBtn, twitterSyncBtn, githubSyncBtn, fbSyncBtn, instaSyncBtn,
+            signOutBtn;
     private TextView firstNameField, lastNameField, emailField;
     GoogleSignInOptions signInOptions;
     String name, email, id, loginType;
@@ -53,7 +59,7 @@ public class ProfileActivity extends AppCompatActivity implements  View.OnClickL
         loginType = getIntent().getStringExtra("loginType");
         checkUserExistOrNot();
 
-         signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.
+        signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.
                 DEFAULT_SIGN_IN).requestEmail().build();
         googleApiClient = new GoogleApiClient.Builder(this).
                 enableAutoManage(this,this)
@@ -68,7 +74,7 @@ public class ProfileActivity extends AppCompatActivity implements  View.OnClickL
         SQLiteHelper sqLiteHelper = new SQLiteHelper(this);
         result = sqLiteHelper.checkRecord(user, loginType);
 
-        if(result == null) {
+        if (result == null) {
             result = createNewUser();
         }
 
@@ -120,14 +126,22 @@ public class ProfileActivity extends AppCompatActivity implements  View.OnClickL
     }
 
     private void signOut() {
-        Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(new ResultCallback<Status>() {
-            @Override
-            public void onResult(@NonNull Status status) {
-                Intent i = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(i);
-            }
-        });
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        Intent i = new Intent(getApplicationContext(), LoginActivity.class);
 
+        if (googleApiClient.isConnected()) {
+            Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(new ResultCallback<Status>() {
+                @Override
+                public void onResult(@NonNull Status status) {
+                }
+                });
+        }
+
+        if (accessToken != null) {
+            LoginManager.getInstance().logOut();
+        }
+
+        startActivity(i);
     }
 
     private  void syncWithGoogle() {
