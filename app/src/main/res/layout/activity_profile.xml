@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="5dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/profile_page"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:paddingBottom="16dp"
+                    android:paddingTop="16dp"
+                    android:gravity="center"
+                    android:background="@color/darkBlue"
+                    android:text="Profile Page "/>
+
+                <TextView
+                    android:id="@+id/firstName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="First Name :"
+                    android:textColor="@color/cardview_dark_background"
+                    android:layout_below="@+id/profile_page"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginTop="10dp">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/firstNameValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/cardview_dark_background"
+                    android:layout_toRightOf="@id/firstName"
+                    android:layout_below="@+id/profile_page"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginTop="10dp">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/lastName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Last Name :"
+                    android:textColor="@color/cardview_dark_background"
+                    android:layout_below="@+id/firstName"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginTop="10dp">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/lastNameValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/cardview_dark_background"
+                    android:layout_below="@+id/firstName"
+                    android:layout_marginStart="14dp"
+                    android:layout_toRightOf="@id/firstName"
+                    android:layout_marginTop="10dp">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/email"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Email :"
+                    android:textColor="@color/cardview_dark_background"
+                    android:layout_below="@+id/lastName"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginBottom="14dp"
+                    android:layout_marginTop="10dp">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/emailValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/cardview_dark_background"
+                    android:layout_below="@+id/lastName"
+                    android:layout_marginStart="14dp"
+                    android:layout_toRightOf="@id/email"
+                    android:layout_marginTop="10dp">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/syncWords"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:paddingBottom="16dp"
+                    android:paddingTop="16dp"
+                    android:gravity="center"
+                    android:layout_below="@id/email"
+                    android:background="@color/lightGreen"
+                    android:text="Sync With"/>
+
+                <LinearLayout
+                    android:id="@+id/buttonPanel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/syncWords"
+                    android:gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+                    <Button
+                        android:id="@+id/googleSyncBtn"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        style="@style/Widget.AppCompat.Button.Colored"
+                        android:text="google"
+                        />
+                    <Button
+                        android:id="@+id/fbLoginBtn"
+                        style="@style/Widget.AppCompat.Button.Colored"
+                        android:layout_width="wrap_content"
+                        android:text="facebook"
+                        android:layout_height="wrap_content"/>
+                    <Button
+                        android:id="@+id/instaLoginBtn"
+                        style="@style/Widget.AppCompat.Button.Colored"
+                        android:layout_width="wrap_content"
+                        android:text="instagram"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/buttonPanel"
+                    android:gravity="center_horizontal"
+                    android:id="@+id/syncWordsSecondPart"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/githubLoginBtn"
+                        style="@style/Widget.AppCompat.Button.Colored"
+                        android:layout_width="wrap_content"
+                        android:text="github"
+                        android:layout_height="wrap_content"/>
+                    <Button
+                        android:id="@+id/twitterLoginBtn"
+                        style="@style/Widget.AppCompat.Button.Colored"
+                        android:layout_width="wrap_content"
+                        android:text="twitter"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/signOutBtn"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/syncWordsSecondPart"
+                    android:layout_marginBottom="30dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_centerHorizontal="true"
+                    android:text="sign out" />
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+    </FrameLayout>
+
+</ScrollView>

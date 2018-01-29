@@ -87,31 +87,61 @@
                             android:imeOptions="flagNoExtractUi"
                             android:inputType="textPassword"/>
                     </android.support.design.widget.TextInputLayout>
-                    
+
+                    <Button
+                        android:id="@+id/manualSignInBtn"
+                        style="@style/Widget.AppCompat.Button.Colored"
+                        android:layout_below="@+id/password_container"
+                        android:layout_centerHorizontal="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="14dp"
+                        android:text="Sign in"/>
+
                     <LinearLayout
+                        android:id="@+id/providerCollection"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/password_container"
+                        android:layout_below="@id/manualSignInBtn"
                         android:gravity="center_horizontal"
                         android:orientation="horizontal">
-
                         <Button
                             android:id="@+id/googleLoginBtn"
                             style="@style/Widget.AppCompat.Button.Colored"
                             android:layout_width="wrap_content"
-                            android:text="google"
+                            android:text="@string/google"
                             android:layout_height="wrap_content"/>
                         <Button
                             android:id="@+id/fbLoginBtn"
                             style="@style/Widget.AppCompat.Button.Colored"
                             android:layout_width="wrap_content"
-                            android:text="facebook"
+                            android:text="@string/facebook"
                             android:layout_height="wrap_content"/>
                         <Button
                             android:id="@+id/instaLoginBtn"
                             style="@style/Widget.AppCompat.Button.Colored"
                             android:layout_width="wrap_content"
-                            android:text="instagram"
+                            android:text="@string/instagram"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/providerCollection"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal">
+                        <Button
+                            android:id="@+id/githubLoginBtn"
+                            style="@style/Widget.AppCompat.Button.Colored"
+                            android:layout_width="wrap_content"
+                            android:text="@string/github"
+                            android:layout_height="wrap_content"/>
+                        <Button
+                            android:id="@+id/twitterLoginBtn"
+                            style="@style/Widget.AppCompat.Button.Colored"
+                            android:layout_width="wrap_content"
+                            android:text="@string/twitter"
                             android:layout_height="wrap_content"/>
                     </LinearLayout>
                     
@@ -119,8 +149,7 @@
             </android.support.v7.widget.CardView>
 
     </FrameLayout>
-
-
+    
 
 
 </ScrollView>

@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SyncLoginApp.iml" filepath="$PROJECT_DIR$/SyncLoginApp.iml" />
+      <module fileurl="file://C:\Users\robert.arifin\Android Projects\SyncLoginApp\.idea\SyncLoginApp.iml" filepath="C:\Users\robert.arifin\Android Projects\SyncLoginApp\.idea\SyncLoginApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

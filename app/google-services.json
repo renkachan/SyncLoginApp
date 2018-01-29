@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "530071197428",
+    "project_id": "syncloginapp"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:530071197428:android:e2e7d409bb9894f1",
+        "android_client_info": {
+          "package_name": "com.apps.synclogin.syncloginapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "530071197428-flpa18g18cg6qkc0rdvk8j6obue7dk54.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "530071197428-3dr3oph6in41qob5vj2s4g76s506a86a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.apps.synclogin.syncloginapp",
+            "certificate_hash": "098914eed5a817f165bf13d9f82976e6945386ca"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlkpLH4eKvoxz-HQhkUQ-MDtNVTGwKx_A"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
