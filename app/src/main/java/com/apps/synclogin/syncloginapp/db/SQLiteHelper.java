@@ -62,13 +62,13 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         database.close();
     }
 
-//    public void updateRecord(FinanceModel record) {
-//        database = this.getReadableDatabase();
-//        database.execSQL("update " + TABLE_NAME + " set " +
-//                COLUMN_AMOUNT + " = '" + record.getAmount() +
-//                "' where " + COLUMN_ID + " = '" + record.getID() + "'");
-//        database.close();
-//    }
+    public void updateRecord(UserProfile record, String currentAccount,  String syncToPlatform, String syncID) {
+        database = this.getReadableDatabase();
+        database.execSQL("update " + TABLE_NAME + " set " +
+                syncToPlatform + " = '" + syncID +
+                "' where " + currentAccount + " = '" + record.getId() + "'");
+        database.close();
+    }
 
 //    public void deleteRecord(FinanceModel record) {
 //        database = this.getReadableDatabase();

@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.apps.synclogin.syncloginapp.db.SQLiteHelper;
+import com.apps.synclogin.syncloginapp.util.FBLogin;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -54,7 +55,6 @@ public class LoginActivity extends AppCompatActivity implements
         fbSignIn = findViewById(R.id.fbLoginBtn);
         fbSignIn.setOnClickListener(this);
         googleSignIn.setOnClickListener(this);
-        settingUpFBLogin();
         GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.
                 DEFAULT_SIGN_IN).requestEmail().build();
         googleApiClient = new GoogleApiClient.Builder(this).
@@ -70,70 +70,65 @@ public class LoginActivity extends AppCompatActivity implements
                 LoginManager.getInstance().logInWithReadPermissions(
                         this, Arrays.asList("public_profile", "email", "user_friends")
                 );
+                settingUpFBLogin();
                 break;
         }
     }
     private void settingUpFBLogin() {
-        callbackManager = CallbackManager.Factory.create();
-
-        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-
-            private ProfileTracker mProfileTracker;
-            Intent i = new  Intent(getApplicationContext(), ProfileActivity.class);
-
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                if (Profile.getCurrentProfile() == null) {
-                    mProfileTracker = new ProfileTracker() {
-                        @Override
-                        protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
-                            mProfileTracker.stopTracking();
-                            Profile.setCurrentProfile(currentProfile);
-                            
-                            i.putExtra("name", Profile.getCurrentProfile().getName());
-                            i.putExtra("id", Profile.getCurrentProfile().getId());
-                            i.putExtra("loginType", SQLiteHelper.COLUMN_FB_ID);
-                            startActivity(i);
-                        }
-                    };
-
-                    mProfileTracker.startTracking();
-                } else {
-                    Profile profile = Profile.getCurrentProfile();
-                    String name = profile.getName();
-                    String id = profile.getId();
-
-                    i.putExtra("name", name);
-                    i.putExtra("id", id);
-                    i.putExtra("loginType", SQLiteHelper.COLUMN_FB_ID);
-                    startActivity(i);
-                }
-            }
-
-            @Override
-            public void onCancel() {
-
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-
-            }
-        });
+        FBLogin fbLogin = new FBLogin();
+        fbLogin.loginAndFetchData();
+//        callbackManager = CallbackManager.Factory.create();
+//
+//        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+//
+//            private ProfileTracker mProfileTracker;
+//            Intent i = new  Intent(getApplicationContext(), ProfileActivity.class);
+//
+//            @Override
+//            public void onSuccess(LoginResult loginResult) {
+//                if (Profile.getCurrentProfile() == null) {
+//                    mProfileTracker = new ProfileTracker() {
+//                        @Override
+//                        protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
+//                            mProfileTracker.stopTracking();
+//                            Profile.setCurrentProfile(currentProfile);
+//
+//                            i.putExtra("name", Profile.getCurrentProfile().getName());
+//                            i.putExtra("id", Profile.getCurrentProfile().getId());
+//                            i.putExtra("loginType", SQLiteHelper.COLUMN_FB_ID);
+//                            startActivity(i);
+//                        }
+//                    };
+//
+//                    mProfileTracker.startTracking();
+//                } else {
+//                    Profile profile = Profile.getCurrentProfile();
+//                    String name = profile.getName();
+//                    String id = profile.getId();
+//
+//                    i.putExtra("name", name);
+//                    i.putExtra("id", id);
+//                    i.putExtra("loginType", SQLiteHelper.COLUMN_FB_ID);
+//                    startActivity(i);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancel() {
+//
+//            }
+//
+//            @Override
+//            public void onError(FacebookException error) {
+//
+//            }
+//        });
     }
 
     public void signInWithGoogle() {
         Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
         startActivityForResult(intent, REQ_CODE);
     }
-
-    //For sign out later
-//    public void signInWithTwitter() {
-//      if(googleApiClient.isConnected()) {
-//          googleApiClient.disconnect();
-//        });
-//    }
-
 
     public void handleResult(GoogleSignInResult result) {
         if (result.isSuccess()) {
@@ -150,9 +145,7 @@ public class LoginActivity extends AppCompatActivity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (callbackManager.onActivityResult(requestCode, resultCode, data)) {
-            return;
-        }
+        FBLogin.callbackManager.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == REQ_CODE) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
@@ -160,7 +153,6 @@ public class LoginActivity extends AppCompatActivity implements
         }
 
         super.onActivityResult(requestCode, resultCode, data);
-
     }
 
     @Override

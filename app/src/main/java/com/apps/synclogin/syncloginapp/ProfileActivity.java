@@ -116,13 +116,22 @@ public class ProfileActivity extends AppCompatActivity implements  View.OnClickL
 //            case R.id.githubLoginBtn:
 //                syncWithGithub();
 //                break;
-//            case R.id.fbLoginBtn:
-//                syncWithFB();
+            case R.id.fbLoginBtn:
+                syncWithFB();
 //                break;
 //            case R.id.instaSyncBtn:
 //                sycnWithInsta();
 //                break;
         }
+    }
+
+    private void syncWithFB() {
+        UserProfile user = new UserProfile();
+        user.setID(id);
+
+        SQLiteHelper sqLiteHelper = new SQLiteHelper(this);
+        //sqLiteHelper.updateRecord(user, loginType, SQLiteHelper.COLUMN_FB_ID, );
+
     }
 
     private void signOut() {
@@ -145,6 +154,7 @@ public class ProfileActivity extends AppCompatActivity implements  View.OnClickL
     }
 
     private  void syncWithGoogle() {
+
 
     }
     @Override
