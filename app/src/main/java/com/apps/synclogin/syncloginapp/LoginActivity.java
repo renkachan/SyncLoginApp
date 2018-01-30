@@ -67,16 +67,13 @@ public class LoginActivity extends AppCompatActivity implements
             case R.id.googleLoginBtn:
                 signInWithGoogle();
             case R.id.fbLoginBtn:
-                LoginManager.getInstance().logInWithReadPermissions(
-                        this, Arrays.asList("public_profile", "email", "user_friends")
-                );
                 settingUpFBLogin();
                 break;
         }
     }
     private void settingUpFBLogin() {
         FBLogin fbLogin = new FBLogin();
-        fbLogin.loginAndFetchData();
+        fbLogin.loginAndFetchData(callbackManager);
 //        callbackManager = CallbackManager.Factory.create();
 //
 //        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -145,7 +142,7 @@ public class LoginActivity extends AppCompatActivity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        FBLogin.callbackManager.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == REQ_CODE) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);

@@ -3,7 +3,9 @@ package com.apps.synclogin.syncloginapp.util;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.telecom.Call;
+import android.widget.Toast;
 
+import com.apps.synclogin.syncloginapp.LoginActivity;
 import com.apps.synclogin.syncloginapp.ProfileActivity;
 import com.apps.synclogin.syncloginapp.db.SQLiteHelper;
 import com.facebook.CallbackManager;
@@ -14,14 +16,18 @@ import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 
+import java.util.Arrays;
+
 /**
  * Created by robert.arifin on 29/01/2018.
  */
 
 public class FBLogin extends AppCompatActivity {
-    public  static CallbackManager callbackManager = CallbackManager.Factory.create();
 
-    public void loginAndFetchData () {
+    public void loginAndFetchData (CallbackManager callbackManager) {
+        LoginManager.getInstance().logInWithReadPermissions(
+                this, Arrays.asList("public_profile", "email", "user_friends")
+        );
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
 
             private ProfileTracker mProfileTracker;
@@ -58,6 +64,7 @@ public class FBLogin extends AppCompatActivity {
 
             @Override
             public void onCancel() {
+                Toast.makeText(getApplicationContext(),"Sign In To Facebook Is Cancelled", Toast.LENGTH_LONG).show();;
 
             }
 
