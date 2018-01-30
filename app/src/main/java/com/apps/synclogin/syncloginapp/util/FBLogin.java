@@ -1,5 +1,8 @@
 package com.apps.synclogin.syncloginapp.util;
 
+import android.app.Activity;
+import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.telecom.Call;
@@ -22,16 +25,22 @@ import java.util.Arrays;
  * Created by robert.arifin on 29/01/2018.
  */
 
-public class FBLogin extends AppCompatActivity {
+public class FBLogin {
+    private Context context;
+
+    public FBLogin(Context context) {
+        this.context = context;
+    }
 
     public void loginAndFetchData (CallbackManager callbackManager) {
         LoginManager.getInstance().logInWithReadPermissions(
-                this, Arrays.asList("public_profile", "email", "user_friends")
+                (Activity) context, Arrays.asList("public_profile", "email", "user_friends")
         );
+
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
 
             private ProfileTracker mProfileTracker;
-            Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
+            Intent i = new Intent(context.getApplicationContext(), ProfileActivity.class);
 
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -45,7 +54,6 @@ public class FBLogin extends AppCompatActivity {
                             i.putExtra("name", Profile.getCurrentProfile().getName());
                             i.putExtra("id", Profile.getCurrentProfile().getId());
                             i.putExtra("loginType", SQLiteHelper.COLUMN_FB_ID);
-                            startActivity(i);
                         }
                     };
 
@@ -58,13 +66,15 @@ public class FBLogin extends AppCompatActivity {
                     i.putExtra("name", name);
                     i.putExtra("id", id);
                     i.putExtra("loginType", SQLiteHelper.COLUMN_FB_ID);
-                    startActivity(i);
                 }
+
+                context.startActivity(i);
             }
 
             @Override
             public void onCancel() {
-                Toast.makeText(getApplicationContext(),"Sign In To Facebook Is Cancelled", Toast.LENGTH_LONG).show();;
+                Toast.makeText(context.getApplicationContext(),"Sign In To Facebook " +
+                        "Is Being Cancelled", Toast.LENGTH_LONG).show();;
 
             }
 

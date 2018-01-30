@@ -11,6 +11,7 @@ import android.widget.Button;
 
 import com.apps.synclogin.syncloginapp.db.SQLiteHelper;
 import com.apps.synclogin.syncloginapp.util.FBLogin;
+import com.apps.synclogin.syncloginapp.util.GoogleLogin;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -55,11 +56,7 @@ public class LoginActivity extends AppCompatActivity implements
         fbSignIn = findViewById(R.id.fbLoginBtn);
         fbSignIn.setOnClickListener(this);
         googleSignIn.setOnClickListener(this);
-        GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.
-                DEFAULT_SIGN_IN).requestEmail().build();
-        googleApiClient = new GoogleApiClient.Builder(this).
-                enableAutoManage(this,this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions).build();
+        callbackManager = CallbackManager.Factory.create();
     }
     @Override
     public void onClick(View v) {
@@ -72,59 +69,16 @@ public class LoginActivity extends AppCompatActivity implements
         }
     }
     private void settingUpFBLogin() {
-        FBLogin fbLogin = new FBLogin();
+        FBLogin fbLogin = new FBLogin(this);
         fbLogin.loginAndFetchData(callbackManager);
-//        callbackManager = CallbackManager.Factory.create();
-//
-//        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-//
-//            private ProfileTracker mProfileTracker;
-//            Intent i = new  Intent(getApplicationContext(), ProfileActivity.class);
-//
-//            @Override
-//            public void onSuccess(LoginResult loginResult) {
-//                if (Profile.getCurrentProfile() == null) {
-//                    mProfileTracker = new ProfileTracker() {
-//                        @Override
-//                        protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
-//                            mProfileTracker.stopTracking();
-//                            Profile.setCurrentProfile(currentProfile);
-//
-//                            i.putExtra("name", Profile.getCurrentProfile().getName());
-//                            i.putExtra("id", Profile.getCurrentProfile().getId());
-//                            i.putExtra("loginType", SQLiteHelper.COLUMN_FB_ID);
-//                            startActivity(i);
-//                        }
-//                    };
-//
-//                    mProfileTracker.startTracking();
-//                } else {
-//                    Profile profile = Profile.getCurrentProfile();
-//                    String name = profile.getName();
-//                    String id = profile.getId();
-//
-//                    i.putExtra("name", name);
-//                    i.putExtra("id", id);
-//                    i.putExtra("loginType", SQLiteHelper.COLUMN_FB_ID);
-//                    startActivity(i);
-//                }
-//            }
-//
-//            @Override
-//            public void onCancel() {
-//
-//            }
-//
-//            @Override
-//            public void onError(FacebookException error) {
-//
-//            }
-//        });
     }
 
     public void signInWithGoogle() {
-        Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-        startActivityForResult(intent, REQ_CODE);
+        GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.
+                DEFAULT_SIGN_IN).requestEmail().build();
+        googleApiClient = new GoogleApiClient.Builder(this).
+                enableAutoManage(this,this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions).build();
     }
 
     public void handleResult(GoogleSignInResult result) {
