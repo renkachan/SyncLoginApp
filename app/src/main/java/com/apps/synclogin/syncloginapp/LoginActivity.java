@@ -63,6 +63,7 @@ public class LoginActivity extends AppCompatActivity implements
         switch (v.getId()) {
             case R.id.googleLoginBtn:
                 signInWithGoogle();
+                break;
             case R.id.fbLoginBtn:
                 settingUpFBLogin();
                 break;
@@ -79,6 +80,8 @@ public class LoginActivity extends AppCompatActivity implements
         googleApiClient = new GoogleApiClient.Builder(this).
                 enableAutoManage(this,this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions).build();
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+        startActivityForResult(signInIntent, REQ_CODE);
     }
 
     public void handleResult(GoogleSignInResult result) {
@@ -96,14 +99,14 @@ public class LoginActivity extends AppCompatActivity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        callbackManager.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == REQ_CODE) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleResult(result);
+        } else {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
         }
-
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
