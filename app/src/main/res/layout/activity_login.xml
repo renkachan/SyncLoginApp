@@ -58,7 +58,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColor="@color/purple"
-                            android:hint="@string/username"
+                            android:hint="@string/email"
                             android:imeOptions="flagNoExtractUi"
                             android:inputType="textNoSuggestions">
 
@@ -88,21 +88,37 @@
                             android:inputType="textPassword"/>
                     </android.support.design.widget.TextInputLayout>
 
-                    <Button
-                        android:id="@+id/manualSignInBtn"
-                        style="@style/Widget.AppCompat.Button.Colored"
-                        android:layout_below="@+id/password_container"
-                        android:layout_centerHorizontal="true"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:id="@+id/manualSignInCollection"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="14dp"
-                        android:text="Sign in"/>
+                        android:layout_below="@id/password_container"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/manualSignUpBtn"
+                            style="@style/Widget.AppCompat.Button.Colored"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="14dp"
+                            android:text="Sign up"/>
+
+                        <Button
+                            android:id="@+id/manualSignInBtn"
+                            style="@style/Widget.AppCompat.Button.Colored"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="14dp"
+                            android:text="Sign in"/>
+
+                    </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/providerCollection"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/manualSignInBtn"
+                        android:layout_below="@id/manualSignInCollection"
                         android:gravity="center_horizontal"
                         android:orientation="horizontal">
                         <Button

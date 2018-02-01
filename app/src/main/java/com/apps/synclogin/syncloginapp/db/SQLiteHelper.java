@@ -25,6 +25,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_FIRST_NAME = "firstName";
     public static final String COLUMN_LAST_NAME = "lastName";
     public static final String COLUMN_EMAIL = "email";
+    public static final String COLUMN_PASSWORD = "password";
     public static final String COLUMN_GOOGLE_ID = "googleID";
     public static final String COLUMN_INSTAGRAM_ID = "instaID";
     public static final String COLUMN_FB_ID = "fbID";
@@ -39,9 +40,9 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     @Override
     public  void onCreate(SQLiteDatabase db) {
         db.execSQL("create table " + TABLE_NAME + " ( " + COLUMN_ID + " INTEGER PRIMARY " +
-                "KEY AUTOINCREMENT," +  COLUMN_FIRST_NAME + " TEXT, " + COLUMN_LAST_NAME + " TEXT, " +
-                COLUMN_EMAIL + " TEXT, " + COLUMN_GOOGLE_ID + " TEXT, "
-                + COLUMN_INSTAGRAM_ID + " TEXT, " + COLUMN_FB_ID + " TEXT, "
+                "KEY AUTOINCREMENT," +  COLUMN_FIRST_NAME + " TEXT, " + COLUMN_LAST_NAME
+                + " TEXT, " + COLUMN_EMAIL + " TEXT, " + COLUMN_GOOGLE_ID + " TEXT, "
+                + COLUMN_PASSWORD + " TEXT, " + COLUMN_INSTAGRAM_ID + " TEXT, " + COLUMN_FB_ID + " TEXT, "
                 + COLUMN_GITHUB_ID + " TEXT, " + COLUMN_TWITTER_ID + " TEXT)");
     }
 
@@ -53,11 +54,18 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     public void insertRecord(UserProfile record, String loginType) {
         database = this.getReadableDatabase();
+
         ContentValues values = new ContentValues();
         values.put(COLUMN_FIRST_NAME, record.getFirstName());
         values.put(COLUMN_LAST_NAME, record.getLastName());
-        values.put(COLUMN_EMAIL, record.getEmail());
-        values.put(loginType, record.getId());
+        values.put(COLUMN_PASSWORD, record.getPassword());
+
+        if (record.getEmail() != null) {
+            values.put(loginType, record.getEmail());
+        } else {
+            values.put(loginType, record.getId());
+        }
+
         database.insert(TABLE_NAME, null, values);
         database.close();
     }
@@ -76,22 +84,33 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 //        database.close();
 //    }
 
-    public UserProfile checkRecord(UserProfile userProfile, String loginID) {
+    public UserProfile checkRecord(UserProfile userProfile, String loginType) {
         database = this.getReadableDatabase();
         UserProfile user = new UserProfile();
-        //ArrayList<UserProfile> record = new ArrayList<UserProfile>();
-        Cursor cursor = database.rawQuery("SELECT " + COLUMN_FIRST_NAME
-                + ", " + COLUMN_LAST_NAME + ", " + COLUMN_EMAIL + " from " + TABLE_NAME + " WHERE "
-                + loginID + "= '" + userProfile.getId() +"'", null);
+        Cursor cursor;
 
-        if (cursor.getCount() > 0) {
-            for (int i = 0; i < cursor.getCount(); i++) {
-                cursor.moveToNext();
+        if (userProfile.getEmail() != null) {
+            cursor = database.rawQuery("SELECT " + COLUMN_FIRST_NAME
+                            + ", " + COLUMN_LAST_NAME + ", " + COLUMN_EMAIL +  ", " +
+                    COLUMN_PASSWORD + " from " + TABLE_NAME + " WHERE " + loginType + "= '" +
+                            userProfile.getEmail() + "'", null);
+        }
+        else {
+            cursor = database.rawQuery("SELECT " + COLUMN_FIRST_NAME
+                            + ", " + COLUMN_LAST_NAME + ", " + COLUMN_EMAIL + " from "
+                            + TABLE_NAME + " WHERE " + loginType + "= '" + userProfile.getId()
+                            + "'", null);
+            }
+
+       if (cursor.moveToFirst()) {
                 user.setFirstName(cursor.getString(0));
                 user.setLastName(cursor.getString(1));
                 user.setEmail(cursor.getString(2));
-            }
+                user.setPassword(cursor.getString(3));
         } else {
+            cursor.close();
+            database.close();
+
             return null;
         }
         cursor.close();

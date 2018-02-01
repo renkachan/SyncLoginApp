@@ -2,7 +2,6 @@
 
     <!-- Base application theme. -->
     <style name="loginTheme" parent="Theme.Design.Light.NoActionBar">
-        <item name="android:colorPrimary">@color/purple</item>
         <item name="android:textColorHint">@color/purple</item>
         <item name="android:colorAccent">@color/colorAccent</item>
     </style>

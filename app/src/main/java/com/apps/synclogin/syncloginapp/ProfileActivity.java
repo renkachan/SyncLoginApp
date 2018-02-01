@@ -32,9 +32,11 @@ public class ProfileActivity extends AppCompatActivity implements  View.OnClickL
     private Button googleSyncBtn, twitterSyncBtn, githubSyncBtn, fbSyncBtn, instaSyncBtn,
             signOutBtn;
     private TextView firstNameField, lastNameField, emailField;
+
     GoogleSignInOptions signInOptions;
-    String name, email, id, loginType;
     GoogleApiClient googleApiClient;
+
+    String name, email, id, loginType, password, loginResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,22 +56,25 @@ public class ProfileActivity extends AppCompatActivity implements  View.OnClickL
         signOutBtn.setOnClickListener(this);
 
         name = getIntent().getStringExtra("name");
+        id  = getIntent().getStringExtra("id");
         email = getIntent().getStringExtra("email");
-        id = getIntent().getStringExtra("id");
+        password = getIntent().getStringExtra("password");
         loginType = getIntent().getStringExtra("loginType");
-        checkUserExistOrNot();
 
         signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.
                 DEFAULT_SIGN_IN).requestEmail().build();
         googleApiClient = new GoogleApiClient.Builder(this).
                 enableAutoManage(this,this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions).build();
+
+        checkUserExistOrNot();
     }
 
     private void checkUserExistOrNot() {
         UserProfile user = new UserProfile();
         UserProfile result;
-        user.setID(id);
+        user.setEmail(email);
+        user.setPassword(password);
 
         SQLiteHelper sqLiteHelper = new SQLiteHelper(this);
         result = sqLiteHelper.checkRecord(user, loginType);
@@ -80,20 +85,26 @@ public class ProfileActivity extends AppCompatActivity implements  View.OnClickL
 
         firstNameField.setText(result.getFirstName());
         lastNameField.setText(result.getLastName());
-         emailField.setText(result.getEmail());
+        emailField.setText(result.getEmail());
     }
 
     private UserProfile createNewUser() {
         String firstName, lastName;
-        String[] separated;
-        separated = name.split(" ");
-        firstName = separated[0];
-        lastName = separated[1];
+
+        if (name.contains(" ")) {
+            firstName = name.substring(0, name.indexOf(' '));
+            lastName =  name.substring(name.indexOf(' ') + 1);
+        } else {
+            firstName = name;
+            lastName = "";
+        }
 
         UserProfile user = new UserProfile();
         user.setID(id);
         user.setFirstName(firstName);
         user.setLastName(lastName);
+        user.setPassword(password);
+        user.setEmail(email);
 
         SQLiteHelper sqLiteHelper = new SQLiteHelper(this);
         sqLiteHelper.insertRecord(user, loginType);
