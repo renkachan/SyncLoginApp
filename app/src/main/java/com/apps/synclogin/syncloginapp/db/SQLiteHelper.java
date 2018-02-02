@@ -70,11 +70,11 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         database.close();
     }
 
-    public void updateRecord(UserProfile record, String currentAccount,  String syncToPlatform, String syncID) {
+    public void updateRecord(UserProfile record, String loginType,  String syncToPlatform, String syncID) {
         database = this.getReadableDatabase();
         database.execSQL("update " + TABLE_NAME + " set " +
                 syncToPlatform + " = '" + syncID +
-                "' where " + currentAccount + " = '" + record.getId() + "'");
+                "' where " + loginType + " = '" + record.getId() + "'");
         database.close();
     }
 

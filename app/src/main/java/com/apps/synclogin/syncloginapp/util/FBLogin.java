@@ -18,6 +18,7 @@ import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.firebase.ui.auth.User;
 
 import java.util.Arrays;
 
@@ -29,13 +30,13 @@ public class FBLogin {
     private Context context;
 
     public FBLogin(Context context) {
+        LoginManager.getInstance().logInWithReadPermissions(
+                (Activity) context, Arrays.asList("public_profile", "email", "user_friends")
+        );
         this.context = context;
     }
 
     public void loginAndFetchData (CallbackManager callbackManager) {
-        LoginManager.getInstance().logInWithReadPermissions(
-                (Activity) context, Arrays.asList("public_profile", "email", "user_friends")
-        );
 
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
 
@@ -48,12 +49,12 @@ public class FBLogin {
                     mProfileTracker = new ProfileTracker() {
                         @Override
                         protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
-                            mProfileTracker.stopTracking();
-                            Profile.setCurrentProfile(currentProfile);
 
-                            i.putExtra("name", Profile.getCurrentProfile().getName());
-                            i.putExtra("id", Profile.getCurrentProfile().getId());
+                            i.putExtra("name", currentProfile.getName());
+                            i.putExtra("id", currentProfile.getId());
                             i.putExtra("loginType", SQLiteHelper.COLUMN_FB_ID);
+
+                            mProfileTracker.stopTracking();
                         }
                     };
 
@@ -83,5 +84,50 @@ public class FBLogin {
 
             }
         });
+    }
+
+    public String getFBId (CallbackManager callbackManager) {
+//        LoginManager.getInstance().logInWithReadPermissions(
+//                (Activity) context, Arrays.asList("public_profile", "email", "user_friends")
+//        );
+        final UserProfile user = new UserProfile();
+        final Profile profile;
+
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+
+            private ProfileTracker mProfileTracker;
+
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                if (Profile.getCurrentProfile() == null) {
+                    mProfileTracker = new ProfileTracker() {
+                        @Override
+                        protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
+                            mProfileTracker.stopTracking();
+                            Profile.setCurrentProfile(currentProfile);
+                        }
+                    };
+
+                    mProfileTracker.startTracking();
+                } else {
+                    Profile profile = Profile.getCurrentProfile();
+                    String testId = profile.getId();
+                }
+            }
+
+            @Override
+            public void onCancel() {
+                Toast.makeText(context.getApplicationContext(),"Sign In To Facebook " +
+                        "Is Being Cancelled", Toast.LENGTH_LONG).show();;
+
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+
+            }
+        });
+
+        return Profile.getCurrentProfile().getId();
     }
 }

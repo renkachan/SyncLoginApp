@@ -9,10 +9,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.apps.synclogin.syncloginapp.db.SQLiteHelper;
+import com.apps.synclogin.syncloginapp.util.FBLogin;
+import com.apps.synclogin.syncloginapp.util.GoogleLogin;
 import com.apps.synclogin.syncloginapp.util.UserProfile;
 import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
 import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.User;
 import com.google.android.gms.auth.api.Auth;
@@ -32,6 +36,7 @@ public class ProfileActivity extends AppCompatActivity implements  View.OnClickL
     private Button googleSyncBtn, twitterSyncBtn, githubSyncBtn, fbSyncBtn, instaSyncBtn,
             signOutBtn;
     private TextView firstNameField, lastNameField, emailField;
+    private CallbackManager callbackManager;
 
     GoogleSignInOptions signInOptions;
     GoogleApiClient googleApiClient;
@@ -43,11 +48,11 @@ public class ProfileActivity extends AppCompatActivity implements  View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        googleSyncBtn = findViewById(R.id.googleLoginBtn);
-        twitterSyncBtn = findViewById(R.id.twitterLoginBtn);
-        githubSyncBtn = findViewById(R.id.githubLoginBtn);
-        fbSyncBtn = findViewById(R.id.fbLoginBtn);
-        instaSyncBtn = findViewById(R.id.instaLoginBtn);
+        googleSyncBtn = findViewById(R.id.googleSyncBtn);
+        twitterSyncBtn = findViewById(R.id.twitterSyncBtn);
+        githubSyncBtn = findViewById(R.id.githubSyncBtn);
+        fbSyncBtn = findViewById(R.id.fbSyncBtn);
+        instaSyncBtn = findViewById(R.id.instaSyncBtn);
         firstNameField = findViewById(R.id.firstNameValue);
         lastNameField = findViewById(R.id.lastNameValue);
         emailField = findViewById(R.id.emailValue);
@@ -61,13 +66,28 @@ public class ProfileActivity extends AppCompatActivity implements  View.OnClickL
         password = getIntent().getStringExtra("password");
         loginType = getIntent().getStringExtra("loginType");
 
+        switch (loginType) {
+            case SQLiteHelper.COLUMN_FB_ID:
+                fbSyncBtn.setEnabled(false);
+                break;
+            case SQLiteHelper.COLUMN_GOOGLE_ID:
+                googleSyncBtn.setEnabled(false);
+                break;
+        }
+
         signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.
-                DEFAULT_SIGN_IN).requestEmail().build();
+             DEFAULT_SIGN_IN).requestEmail().build();
         googleApiClient = new GoogleApiClient.Builder(this).
                 enableAutoManage(this,this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions).build();
 
+        callbackManager = CallbackManager.Factory.create();
+
         checkUserExistOrNot();
+    }
+
+    private void disableSyncButtons() {
+
     }
 
     private void checkUserExistOrNot() {
@@ -115,7 +135,7 @@ public class ProfileActivity extends AppCompatActivity implements  View.OnClickL
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.googleLoginBtn:
+            case R.id.googleSyncBtn:
                 syncWithGoogle();
                 break;
             case R.id.signOutBtn:
@@ -127,7 +147,7 @@ public class ProfileActivity extends AppCompatActivity implements  View.OnClickL
 //            case R.id.githubLoginBtn:
 //                syncWithGithub();
 //                break;
-            case R.id.fbLoginBtn:
+            case R.id.fbSyncBtn:
                 syncWithFB();
 //                break;
 //            case R.id.instaSyncBtn:
@@ -138,11 +158,21 @@ public class ProfileActivity extends AppCompatActivity implements  View.OnClickL
 
     private void syncWithFB() {
         UserProfile user = new UserProfile();
-        user.setID(id);
+        String  fbID = "";
+
+        if (loginType.equals(SQLiteHelper.COLUMN_EMAIL)) {
+            user.setID(email);
+        } else {
+            user.setID(id);
+        }
+
+        FBLogin fbLogin = new FBLogin(this);
+        fbID = fbLogin.getFBId(callbackManager);
 
         SQLiteHelper sqLiteHelper = new SQLiteHelper(this);
-        //sqLiteHelper.updateRecord(user, loginType, SQLiteHelper.COLUMN_FB_ID, );
+        sqLiteHelper.updateRecord(user, loginType, SQLiteHelper.COLUMN_FB_ID, fbID);
 
+        fbSyncBtn.setEnabled(false);
     }
 
     private void signOut() {
@@ -150,17 +180,16 @@ public class ProfileActivity extends AppCompatActivity implements  View.OnClickL
         Intent i = new Intent(getApplicationContext(), LoginActivity.class);
 
         if (googleApiClient.isConnected()) {
-            Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(new ResultCallback<Status>() {
-                @Override
-                public void onResult(@NonNull Status status) {
-                }
-                });
+            Auth.GoogleSignInApi.signOut(googleApiClient);
+
         }
 
         if (accessToken != null) {
             LoginManager.getInstance().logOut();
         }
 
+        Toast.makeText(getApplicationContext(), "You already logged out",
+                Toast.LENGTH_LONG).show();
         startActivity(i);
     }
 

@@ -133,13 +133,13 @@
                         android:text="google"
                         />
                     <Button
-                        android:id="@+id/fbLoginBtn"
+                        android:id="@+id/fbSyncBtn"
                         style="@style/Widget.AppCompat.Button.Colored"
                         android:layout_width="wrap_content"
                         android:text="facebook"
                         android:layout_height="wrap_content"/>
                     <Button
-                        android:id="@+id/instaLoginBtn"
+                        android:id="@+id/instaSyncBtn"
                         style="@style/Widget.AppCompat.Button.Colored"
                         android:layout_width="wrap_content"
                         android:text="instagram"
@@ -155,13 +155,13 @@
                     android:orientation="horizontal">
 
                     <Button
-                        android:id="@+id/githubLoginBtn"
+                        android:id="@+id/githubSyncBtn"
                         style="@style/Widget.AppCompat.Button.Colored"
                         android:layout_width="wrap_content"
                         android:text="github"
                         android:layout_height="wrap_content"/>
                     <Button
-                        android:id="@+id/twitterLoginBtn"
+                        android:id="@+id/twitterSyncBtn"
                         style="@style/Widget.AppCompat.Button.Colored"
                         android:layout_width="wrap_content"
                         android:text="twitter"
