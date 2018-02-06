@@ -153,8 +153,8 @@ public class LoginActivity extends AppCompatActivity implements
         if (requestCode == REQ_CODE) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleResult(result);
-        } else if (callbackManager.onActivityResult(requestCode, resultCode, data)) {
-            return ;
+        } else {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
 

@@ -188,7 +188,7 @@ public class ProfileActivity extends AppCompatActivity implements  View.OnClickL
             LoginManager.getInstance().logOut();
         }
 
-        Toast.makeText(getApplicationContext(), "You already logged out",
+        Toast.makeText(getApplicationContext(), "Logged out",
                 Toast.LENGTH_LONG).show();
         startActivity(i);
     }
