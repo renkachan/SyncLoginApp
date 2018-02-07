@@ -6,6 +6,7 @@ import android.media.MediaCas;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -77,14 +78,17 @@ public class ProfileActivity extends AppCompatActivity implements  View.OnClickL
 
         signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.
              DEFAULT_SIGN_IN).requestEmail().build();
+
         googleApiClient = new GoogleApiClient.Builder(this).
                 enableAutoManage(this,this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions).build();
+        googleApiClient.connect();
 
         callbackManager = CallbackManager.Factory.create();
-
         checkUserExistOrNot();
     }
+
+
 
     private void disableSyncButtons() {
 
@@ -178,11 +182,24 @@ public class ProfileActivity extends AppCompatActivity implements  View.OnClickL
     private void signOut() {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         Intent i = new Intent(getApplicationContext(), LoginActivity.class);
-
-        if (googleApiClient.isConnected()) {
-            Auth.GoogleSignInApi.signOut(googleApiClient);
-
-        }
+//        googleApiClient.registerConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+//            @Override
+//            public void onConnected(Bundle bundle) {
+        Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        Log.d("status", status.getStatusMessage().toString());
+                        Log.d("status", status.getStatus().toString());
+                    }
+                });
+//                    Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(new ResultCallback<Status>() {
+//                        @Override
+//                        public void onResult(@NonNull Status status) {
+//                        }
+//                    });
+//                }
+//
 
         if (accessToken != null) {
             LoginManager.getInstance().logOut();

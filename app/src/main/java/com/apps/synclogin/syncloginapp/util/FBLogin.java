@@ -51,19 +51,24 @@ public class FBLogin {
 
         );
 
+
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
 
             Intent i = new Intent(context.getApplicationContext(), ProfileActivity.class);
 
             @Override
             public void onSuccess(LoginResult loginResult) {
-                GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+                Log.d("access token", loginResult.getAccessToken().getToken());
+                GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
+
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         try {
                             id = object.getString("id");
                             if(object.has("name"))
-                                name = object.getString("first_name");
+                                name = object.getString("name");
+                            Log.d("name", object.toString(4));
 
                             i.putExtra("name", name);
                             i.putExtra("id", id);
@@ -78,7 +83,7 @@ public class FBLogin {
 
                 Bundle parameters = new Bundle();
                 parameters.putString("fields", "id,name");
-                 request.setParameters(parameters);
+                request.setParameters(parameters);
                 request.executeAsync();
             }
 
