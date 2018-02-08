@@ -89,17 +89,17 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         UserProfile user = new UserProfile();
         Cursor cursor;
 
-        if (userProfile.getEmail() != null) {
+        if (loginType.equals(SQLiteHelper.COLUMN_EMAIL)) {
             cursor = database.rawQuery("SELECT " + COLUMN_FIRST_NAME
-                            + ", " + COLUMN_LAST_NAME + ", " + COLUMN_EMAIL +  ", " +
+                    + ", " + COLUMN_LAST_NAME + ", " + COLUMN_EMAIL +  ", " +
                     COLUMN_PASSWORD + " from " + TABLE_NAME + " WHERE " + loginType + "= '" +
-                            userProfile.getEmail() + "'", null);
+                    userProfile.getEmail() + "'", null);
         }
         else {
             cursor = database.rawQuery("SELECT " + COLUMN_FIRST_NAME
-                            + ", " + COLUMN_LAST_NAME + ", " + COLUMN_EMAIL + " from "
-                            + TABLE_NAME + " WHERE " + loginType + "= '" + userProfile.getId()
-                            + "'", null);
+                    + ", " + COLUMN_LAST_NAME + ", " + COLUMN_EMAIL + ", "
+                    + COLUMN_PASSWORD + " from " + TABLE_NAME + " WHERE "
+                    + loginType + "= '" + userProfile.getId() + "'", null);
             }
 
        if (cursor.moveToFirst()) {

@@ -1,8 +1,10 @@
 package com.apps.synclogin.syncloginapp.util;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -45,7 +47,7 @@ public class FBLogin {
         this.context = context;
     }
 
-    public void loginAndFetchData (CallbackManager callbackManager) {
+    public void loginAndFetchData(CallbackManager callbackManager) {
         LoginManager.getInstance().logInWithReadPermissions(
                 (Activity) context, Arrays.asList("public_profile", "email", "user_friends")
 
@@ -62,24 +64,24 @@ public class FBLogin {
                 GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(),
                         new GraphRequest.GraphJSONObjectCallback() {
 
-                    @Override
-                    public void onCompleted(JSONObject object, GraphResponse response) {
-                        try {
-                            id = object.getString("id");
-                            if(object.has("name"))
-                                name = object.getString("name");
-                            Log.d("name", object.toString(4));
+                            @Override
+                            public void onCompleted(JSONObject object, GraphResponse response) {
+                                try {
+                                    id = object.getString("id");
+                                    if (object.has("name"))
+                                        name = object.getString("name");
+                                    Log.d("name", object.toString(4));
 
-                            i.putExtra("name", name);
-                            i.putExtra("id", id);
-                            i.putExtra("loginType", SQLiteHelper.COLUMN_FB_ID);
+                                    i.putExtra("name", name);
+                                    i.putExtra("id", id);
+                                    i.putExtra("loginType", SQLiteHelper.COLUMN_FB_ID);
 
-                            context.startActivity(i);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
+                                    context.startActivity(i);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
 
                 Bundle parameters = new Bundle();
                 parameters.putString("fields", "id,name");
@@ -89,8 +91,9 @@ public class FBLogin {
 
             @Override
             public void onCancel() {
-                Toast.makeText(context.getApplicationContext(),"Sign In To Facebook " +
-                        "Is Being Cancelled", Toast.LENGTH_LONG).show();;
+                Toast.makeText(context.getApplicationContext(), "Sign In To Facebook " +
+                        "Is Being Cancelled", Toast.LENGTH_LONG).show();
+                ;
 
             }
 
@@ -101,48 +104,54 @@ public class FBLogin {
         });
     }
 
-    public String getFBId (CallbackManager callbackManager) {
-//        LoginManager.getInstance().logInWithReadPermissions(
-//                (Activity) context, Arrays.asList("public_profile", "email", "user_friends")
-//        );
-        final UserProfile user = new UserProfile();
-        final Profile profile;
+    public String getFBId(CallbackManager callbackManager) {
+        LoginManager.getInstance().logInWithReadPermissions(
+                (Activity) context, Arrays.asList("public_profile", "email", "user_friends")
+
+        );
 
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
 
-            private ProfileTracker mProfileTracker;
-
             @Override
             public void onSuccess(LoginResult loginResult) {
-                if (Profile.getCurrentProfile() == null) {
-                    mProfileTracker = new ProfileTracker() {
-                        @Override
-                        protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
-                            mProfileTracker.stopTracking();
-                            Profile.setCurrentProfile(currentProfile);
-                        }
-                    };
+                Log.d("access token", loginResult.getAccessToken().getToken());
+                GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
 
-                    mProfileTracker.startTracking();
-                } else {
-                    Profile profile = Profile.getCurrentProfile();
-                    String testId = profile.getId();
-                }
+                            @Override
+                            public void onCompleted(JSONObject object, GraphResponse response) {
+                                try {
+                                    id = object.getString("id");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,name");
+                request.setParameters(parameters);
+                request.executeAsync();
             }
 
             @Override
             public void onCancel() {
-                Toast.makeText(context.getApplicationContext(),"Sign In To Facebook " +
-                        "Is Being Cancelled", Toast.LENGTH_LONG).show();;
+                Toast.makeText(context.getApplicationContext(), "Sign In To Facebook " +
+                        "Is Being Cancelled", Toast.LENGTH_LONG).show();
+                ;
 
             }
 
             @Override
-            public void onError(FacebookException error) {
-
+            public void onError(FacebookException e) {
+                e.printStackTrace();
             }
         });
 
-        return Profile.getCurrentProfile().getId();
+        if (id != null) {
+            return  id;
+        } else {
+            return  null;
+        }
     }
 }

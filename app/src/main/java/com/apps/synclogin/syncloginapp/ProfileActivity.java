@@ -60,6 +60,8 @@ public class ProfileActivity extends AppCompatActivity implements  View.OnClickL
         signOutBtn = findViewById(R.id.signOutBtn);
 
         signOutBtn.setOnClickListener(this);
+        googleSyncBtn.setOnClickListener(this);
+        fbSyncBtn.setOnClickListener(this);
 
         name = getIntent().getStringExtra("name");
         id  = getIntent().getStringExtra("id");
@@ -189,8 +191,7 @@ public class ProfileActivity extends AppCompatActivity implements  View.OnClickL
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(Status status) {
-                        Log.d("status", status.getStatusMessage().toString());
-                        Log.d("status", status.getStatus().toString());
+
                     }
                 });
 //                    Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(new ResultCallback<Status>() {
