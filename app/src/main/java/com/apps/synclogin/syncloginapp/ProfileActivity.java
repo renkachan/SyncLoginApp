@@ -27,6 +27,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 /**
  * Created by Renka on 1/24/2018.
@@ -201,6 +203,14 @@ public class ProfileActivity extends AppCompatActivity implements  View.OnClickL
 //                    });
 //                }
 //
+        Auth.GoogleSignInApi.revokeAccess(googleApiClient)
+                .setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        // ...
+                    }
+                });
 
         if (accessToken != null) {
             LoginManager.getInstance().logOut();

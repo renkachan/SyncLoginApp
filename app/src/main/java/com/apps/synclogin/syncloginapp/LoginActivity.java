@@ -1,12 +1,18 @@
 package com.apps.synclogin.syncloginapp;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -15,6 +21,7 @@ import android.widget.Toast;
 import com.apps.synclogin.syncloginapp.db.SQLiteHelper;
 import com.apps.synclogin.syncloginapp.util.FBLogin;
 import com.apps.synclogin.syncloginapp.util.GoogleLogin;
+import com.apps.synclogin.syncloginapp.util.InstaLogin;
 import com.apps.synclogin.syncloginapp.util.UserProfile;
 import com.facebook.CallbackManager;
 import com.facebook.login.widget.LoginButton;
@@ -31,11 +38,14 @@ import java.util.ArrayList;
 
 public class LoginActivity extends AppCompatActivity implements
         View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
-    private Button googleSignIn, fbSignIn, manualSignIn, manualSignUp;
+    private Button googleSignIn, fbSignIn, instaSignIn, manualSignIn, manualSignUp;
+    private WebView instawebView;
     private EditText emailField, passwordField;
     private FrameLayout errorMessageField;
     private LoginButton loginButton;
     private CallbackManager callbackManager;
+    private GoogleSignInOptions signInOptions;
+    private GoogleApiClient googleApiClient;
     private static final int REQ_CODE = 400;
     private static final String EMAIL = "email";
 
@@ -50,12 +60,21 @@ public class LoginActivity extends AppCompatActivity implements
         googleSignIn = findViewById(R.id.googleLoginBtn);
         fbSignIn = findViewById(R.id.fbLoginBtn);
         manualSignIn = findViewById(R.id.manualSignInBtn);
+        instaSignIn = findViewById(R.id.instaLoginBtn);
+        instawebView = findViewById(R.id.instaWebView);
         errorMessageField = findViewById(R.id.error_message_container);
 
         fbSignIn.setOnClickListener(this);
         googleSignIn.setOnClickListener(this);
         manualSignIn.setOnClickListener(this);
         manualSignUp.setOnClickListener(this);
+        instaSignIn.setOnClickListener(this);
+
+        signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.
+                DEFAULT_SIGN_IN).requestEmail().build();
+        googleApiClient = new GoogleApiClient.Builder(this).
+                enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions).build();
 
         callbackManager = CallbackManager.Factory.create();
     }
@@ -69,6 +88,8 @@ public class LoginActivity extends AppCompatActivity implements
             case R.id.fbLoginBtn:
                 signInWithFB();
                 break;
+            case R.id.instaLoginBtn:
+                signInWithInstagram();
             case R.id.manualSignInBtn:
                 signInManual();
                 break;
@@ -125,6 +146,54 @@ public class LoginActivity extends AppCompatActivity implements
         fbLogin.loginAndFetchData(callbackManager);
     }
 
+    public void signInWithInstagram() {
+        final ProgressDialog progressDialog = ProgressDialog.show
+                (this, "", "Loading...", true);
+        InstaLogin insta = new InstaLogin(this, "792278482500417ea450ee7b0eb0762b",
+             "sociallogin://redirect", "token");
+        String instaUri = insta.buildWebViewUri();
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        WebView instaWebView = new WebView(this);
+        instaWebView.loadUrl(instaUri);
+        instaWebView.setWebViewClient(new WebViewClient() {
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+              progressDialog.show();
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+
+                return true;
+            }
+
+            @Override
+            public void onPageFinished(WebView view, final String url) {
+
+                progressDialog.cancel();
+            }
+        });
+
+        alert.setView(instaWebView);
+        alert.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+
+        alert.show();
+//        String instaUri = "";
+//
+//
+//
+//        instawebView.getSettings().setJavaScriptEnabled(true);
+//        instawebView.loadUrl(instaUri);
+    }
+
     public void signInWithGoogle() {
        // Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
         GoogleLogin signIn = new GoogleLogin(this);
@@ -143,6 +212,9 @@ public class LoginActivity extends AppCompatActivity implements
             i.putExtra("id", id);
             i.putExtra("loginType", SQLiteHelper.COLUMN_GOOGLE_ID);
             startActivity(i);
+        } else {
+            googleApiClient.stopAutoManage(this);
+            googleApiClient.disconnect();
         }
     }
 
