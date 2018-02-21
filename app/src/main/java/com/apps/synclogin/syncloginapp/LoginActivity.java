@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -150,9 +151,11 @@ public class LoginActivity extends AppCompatActivity implements
         final ProgressDialog progressDialog = ProgressDialog.show
                 (this, "", "Loading...", true);
         InstaLogin insta = new InstaLogin(this, "792278482500417ea450ee7b0eb0762b",
-             "sociallogin://redirect", "token");
+             "http://blank.co.id", "token");
+
         String instaUri = insta.buildWebViewUri();
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        final AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         WebView instaWebView = new WebView(this);
         instaWebView.loadUrl(instaUri);
@@ -160,7 +163,7 @@ public class LoginActivity extends AppCompatActivity implements
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-              progressDialog.show();
+                progressDialog.show();
             }
 
             @Override
@@ -172,8 +175,17 @@ public class LoginActivity extends AppCompatActivity implements
 
             @Override
             public void onPageFinished(WebView view, final String url) {
-
                 progressDialog.cancel();
+
+                if (url.contains("http://blank.co.id")) {
+                    Log.d("callback", url);
+                    Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
+                    i.putExtra("name", "robert arifin");
+                    i.putExtra("id", "243243sdsfsdf");
+                    i.putExtra("loginType", SQLiteHelper.COLUMN_INSTAGRAM_ID);
+                    startActivity(i);
+
+                }
             }
         });
 
@@ -186,6 +198,7 @@ public class LoginActivity extends AppCompatActivity implements
         });
 
         alert.show();
+        progressDialog.show();
 //        String instaUri = "";
 //
 //
